@@ -3,7 +3,7 @@ library algolia;
 import 'dart:async';
 import 'dart:convert';
 import 'package:meta/meta.dart';
-import 'package:http/http.dart';
+import 'package:universal_html/prefer_universal/html.dart';
 import 'package:uuid/uuid.dart';
 
 part 'src/algolia.dart';
@@ -22,3 +22,4 @@ part 'src/batch.dart';
 part 'src/task.dart';
 
 part 'src/util/json_encode.dart';
+part 'src/util/html.dart';
