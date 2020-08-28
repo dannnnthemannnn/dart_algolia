@@ -17,17 +17,13 @@ class AlgoliaIndexSettings extends AlgoliaSettings {
         super._(algolia, indexName);
 
   Future<Map<String, dynamic>> getSettings() async {
-    try {
-      String url = '${algolia._host}indexes/$_index/settings';
-      Response response = await get(
-        url,
-        headers: algolia._header,
-      );
-      Map<String, dynamic> body = json.decode(response.body);
-      return body;
-    } catch (err) {
-      return err;
-    }
+    String url = '${algolia._host}indexes/$_index/settings';
+    Response response = await get(
+      url,
+      headers: algolia._header,
+    );
+    Map<String, dynamic> body = json.decode(response.body);
+    return body;
   }
 }
 
@@ -56,24 +52,20 @@ class AlgoliaSettings {
   }
 
   Future<AlgoliaTask> setSettings() async {
-    try {
-      assert(
-          _parameters.keys.isNotEmpty, 'No setting parameter to update found.');
+    assert(
+        _parameters.keys.isNotEmpty, 'No setting parameter to update found.');
 
-      String url = '${algolia._host}indexes/$_index/settings';
-      Response response = await put(
-        url,
-        headers: algolia._header,
-        body: utf8
-            .encode(json.encode(_parameters, toEncodable: jsonEncodeHelper)),
-        encoding: Encoding.getByName('utf-8'),
-      );
-      Map<String, dynamic> body = json.decode(response.body);
-      AlgoliaTask task = AlgoliaTask._(algolia, _index, body);
-      return task;
-    } catch (err) {
-      return err;
-    }
+    String url = '${algolia._host}indexes/$_index/settings';
+    Response response = await put(
+      url,
+      headers: algolia._header,
+      body:
+          utf8.encode(json.encode(_parameters, toEncodable: jsonEncodeHelper)),
+      encoding: Encoding.getByName('utf-8'),
+    );
+    Map<String, dynamic> body = json.decode(response.body);
+    AlgoliaTask task = AlgoliaTask._(algolia, _index, body);
+    return task;
   }
 
   ///

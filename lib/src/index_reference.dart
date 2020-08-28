@@ -113,25 +113,22 @@ class AlgoliaIndexReference extends AlgoliaQuery {
   Future<List<AlgoliaObjectSnapshot>> getObjectsByIds(
       [List<String> objectIds]) async {
     assert(index != null, 'You can\'t get objects without an indexName.');
-    try {
-      String url = '${algolia._host}indexes/*/objects';
-      final List<Map> objects = List.generate(objectIds.length,
-          (int i) => {'indexName': index, 'objectID': objectIds[i]});
-      final Map requests = {'requests': objects};
-      Response response = await post(
-        url,
-        headers: algolia._header,
-        body: utf8.encode(json.encode(requests, toEncodable: jsonEncodeHelper)),
-        encoding: Encoding.getByName('utf-8'),
-      );
-      Map<String, dynamic> result = json.decode(response.body);
-      List<dynamic> results = result['results'];
-      return List.generate(results.length, (i) {
-        return AlgoliaObjectSnapshot.fromMap(algolia, _index, results[i]);
-      });
-    } catch (err) {
-      return err;
-    }
+
+    String url = '${algolia._host}indexes/*/objects';
+    final List<Map> objects = List.generate(objectIds.length,
+        (int i) => {'indexName': index, 'objectID': objectIds[i]});
+    final Map requests = {'requests': objects};
+    Response response = await post(
+      url,
+      headers: algolia._header,
+      body: utf8.encode(json.encode(requests, toEncodable: jsonEncodeHelper)),
+      encoding: Encoding.getByName('utf-8'),
+    );
+    Map<String, dynamic> result = json.decode(response.body);
+    List<dynamic> results = result['results'];
+    return List.generate(results.length, (i) {
+      return AlgoliaObjectSnapshot.fromMap(algolia, _index, results[i]);
+    });
   }
 
   ///
@@ -141,18 +138,15 @@ class AlgoliaIndexReference extends AlgoliaQuery {
   ///
   Future<AlgoliaTask> clearIndex() async {
     assert(index != null, 'You can\'t clear an objects without an indexName.');
-    try {
-      String url = '${algolia._host}indexes/$index/clear';
-      Response response = await post(
-        url,
-        headers: algolia._header,
-        encoding: Encoding.getByName('utf-8'),
-      );
-      Map<String, dynamic> body = json.decode(response.body);
-      return AlgoliaTask._(algolia, index, body);
-    } catch (err) {
-      return err;
-    }
+
+    String url = '${algolia._host}indexes/$index/clear';
+    Response response = await post(
+      url,
+      headers: algolia._header,
+      encoding: Encoding.getByName('utf-8'),
+    );
+    Map<String, dynamic> body = json.decode(response.body);
+    return AlgoliaTask._(algolia, index, body);
   }
 
   ///
@@ -190,26 +184,23 @@ class AlgoliaIndexReference extends AlgoliaQuery {
         'You can\'t copy or move an index without a destination.');
     assert(copy != null,
         'You can\'t copy or move an index without selecting which operation.');
-    try {
-      String url = '${algolia._host}indexes/$index/operation';
-      final Map<String, dynamic> data = {
-        'operation': copy ? 'copy' : 'move',
-        'destination': destination,
-      };
-      if (scopes != null) {
-        data['scope'] = scopes.map<String>((s) => _scopeToString(s)).toList();
-      }
-      Response response = await post(
-        url,
-        headers: algolia._header,
-        encoding: Encoding.getByName('utf-8'),
-        body: utf8.encode(json.encode(data, toEncodable: jsonEncodeHelper)),
-      );
-      Map<String, dynamic> body = json.decode(response.body);
-      return AlgoliaTask._(algolia, index, body);
-    } catch (err) {
-      return err;
+
+    String url = '${algolia._host}indexes/$index/operation';
+    final Map<String, dynamic> data = {
+      'operation': copy ? 'copy' : 'move',
+      'destination': destination,
+    };
+    if (scopes != null) {
+      data['scope'] = scopes.map<String>((s) => _scopeToString(s)).toList();
     }
+    Response response = await post(
+      url,
+      headers: algolia._header,
+      encoding: Encoding.getByName('utf-8'),
+      body: utf8.encode(json.encode(data, toEncodable: jsonEncodeHelper)),
+    );
+    Map<String, dynamic> body = json.decode(response.body);
+    return AlgoliaTask._(algolia, index, body);
   }
 
   String _scopeToString(CopyScope scope) {
@@ -228,23 +219,20 @@ class AlgoliaIndexReference extends AlgoliaQuery {
       List<Map<String, dynamic>> objects) async {
     assert(
         index != null, 'You can\'t replace all objects without an indexName.');
-    try {
-      final AlgoliaIndexReference tempIndex = algolia.index(Uuid().v4());
-      final AlgoliaTask copyTask = await copyIndex(
-        destination: tempIndex.index,
-        scopes: [
-          CopyScope.Settings,
-          CopyScope.Synonyms,
-          CopyScope.Rules,
-        ],
-      );
-      await copyTask.waitTask();
-      final AlgoliaTask batchTask = await tempIndex.addObjects(objects);
-      await batchTask.waitTask();
-      return await tempIndex.moveIndex(destination: index);
-    } catch (err) {
-      return err;
-    }
+
+    final AlgoliaIndexReference tempIndex = algolia.index(Uuid().v4());
+    final AlgoliaTask copyTask = await copyIndex(
+      destination: tempIndex.index,
+      scopes: [
+        CopyScope.Settings,
+        CopyScope.Synonyms,
+        CopyScope.Rules,
+      ],
+    );
+    await copyTask.waitTask();
+    final AlgoliaTask batchTask = await tempIndex.addObjects(objects);
+    await batchTask.waitTask();
+    return await tempIndex.moveIndex(destination: index);
   }
 
   ///
@@ -254,17 +242,14 @@ class AlgoliaIndexReference extends AlgoliaQuery {
   ///
   Future<AlgoliaTask> deleteIndex() async {
     assert(index != null, 'You can\'t clear an objects without an indexName.');
-    try {
-      String url = '${algolia._host}indexes/$index';
-      Response response = await delete(
-        url,
-        headers: algolia._header,
-      );
-      Map<String, dynamic> body = json.decode(response.body);
-      return AlgoliaTask._(algolia, index, body);
-    } catch (err) {
-      return err;
-    }
+
+    String url = '${algolia._host}indexes/$index';
+    Response response = await delete(
+      url,
+      headers: algolia._header,
+    );
+    Map<String, dynamic> body = json.decode(response.body);
+    return AlgoliaTask._(algolia, index, body);
   }
 }
 
