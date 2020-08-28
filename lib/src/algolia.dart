@@ -60,18 +60,14 @@ class Algolia {
       AlgoliaMultiIndexesReference._(this);
 
   Future<AlgoliaIndexesSnapshot> getIndices() async {
-    try {
-      String _url = '${this._host}indexes';
-      Response response = await get(
-        _url,
-        headers: this._header,
-      );
-      print(response);
-      Map<String, dynamic> body = json.decode(response.body);
-      print(body);
-      return AlgoliaIndexesSnapshot._(this, body);
-    } catch (err) {
-      return err;
-    }
+    String _url = '${this._host}indexes';
+    Response response = await get(
+      _url,
+      headers: this._header,
+    );
+    print(response);
+    Map<String, dynamic> body = json.decode(response.body);
+    print(body);
+    return AlgoliaIndexesSnapshot._(this, body);
   }
 }
